@@ -5,6 +5,8 @@ import java.net.URI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +44,7 @@ import com.letelumiere.forecast.domain.openApi.model.ShortApiResponse;
         @Autowired HttpHeaders httpHeaders;
         @Autowired RestTemplate restTemplate;
 
-        String baseUrl = "http://apis.data.go.kr/1360000";
+        String baseUrl = "https://apis.data.go.kr/1360000";
 
         String villageServiceUrl = "/VilageFcstInfoService_2.0";
         String MidFcstInfoService = "/MidFcstInfoService";
@@ -60,7 +62,7 @@ import com.letelumiere.forecast.domain.openApi.model.ShortApiResponse;
         public ShortApiResponse getShortInfo(ShortApiReqeust request){
 
             var uri = UriComponentsBuilder.fromHttpUrl(baseUrl+villageServiceUrl+getVilageFcst)
-                .queryParam("ServiceKey", request.getServiceKey())
+                .queryParam("serviceKey", request.getServiceKey())
                 .queryParam("pageNo", request.getPageNo())
                 .queryParam("dataType", request.getDataType())
                 .queryParam("base_date", request.getBase_date())
@@ -70,16 +72,16 @@ import com.letelumiere.forecast.domain.openApi.model.ShortApiResponse;
                 .build()
                 .toUriString();
 
-            restTemplate.setMessageConverters(gson);
-            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-                //httpHeaders.add("Authorization", AUTHORIZATION);
-            httpHeaders.add("Content-Type","application/json; charset=UTF-8");
-            RequestEntity<Void> requestEntity = RequestEntity.get(uri).headers(httpHeaders).build();
-            ResponseEntity<ShortApiResponse> response = restTemplate.exchange(uri, HttpMethod.GET, requestEntity, ShortApiResponse.class);
-
-
-            System.out.println(response.getBody());
-            return response.getBody();  
+                ShortApiResponse result = restTemplate.getForObject(uri, ShortApiResponse.class);
+                if (result != null) {
+                    // 성공적으로 응답 받은 경우
+                    System.out.println(result.toString());
+                } else {
+                    // 응답이 없거나 오류가 발생한 경우
+                    System.out.println("No response or error occurred.");
+                }
+            
+                return result;
         }
 
     }

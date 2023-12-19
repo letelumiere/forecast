@@ -20,7 +20,7 @@ class ForecastApplicationTests {
 	void contextLoads() {
 	
 		var apiRequest = ShortApiReqeust.builder()
-			.ServiceKey("LtU1iAgzFsSLt%2B%2BlIFdaFpZuMv%2BXPFR3tHw9XbFDBTOdm%2BztvmN1%2BIgqxmk6F5V%2FJggpSEWj43t3iEUW99RzYQ%3D%3D")
+			.serviceKey("LtU1iAgzFsSLt%2B%2BlIFdaFpZuMv%2BXPFR3tHw9XbFDBTOdm%2BztvmN1%2BIgqxmk6F5V%2FJggpSEWj43t3iEUW99RzYQ%3D%3D")
 			.pageNo(1)
 			.numOfRows(1)
 			.dataType("JSON")
@@ -29,7 +29,7 @@ class ForecastApplicationTests {
 			.nx(55)
 			.ny(127)
 			.build();
-		
+			
 			apiController.getShortAPI(apiRequest);
 	}
 }

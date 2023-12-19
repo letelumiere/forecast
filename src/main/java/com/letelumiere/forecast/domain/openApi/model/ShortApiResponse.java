@@ -1,6 +1,12 @@
 package com.letelumiere.forecast.domain.openApi.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
 
+@Data
+@Getter
+@AllArgsConstructor
 public class ShortApiResponse { //단기예보, 초단기예보 공용
     private String resultCode;//2	필수	00	결과코드
     private String resultMsg;//50	필수	OK	결과메시지
