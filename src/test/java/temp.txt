@@ -1,0 +1,132 @@
+
+//단기예보 category - 초단기 = LGT, 단기 = TMP
+
+
+{"response":
+    {"header":{
+        "resultCode":"00",
+        "resultMsg":"NORMAL_SERVICE"
+    },
+    "body":{
+        "dataType":"JSON",
+        "items":{
+            "item":
+            [{"baseDate":"20231219",
+            "baseTime":"0500",
+            "category":"TMP",
+            "fcstDate":"20231219",
+            "fcstTime":"0600",
+            "fcstValue":"-8",
+            "nx":55,
+            "ny":127}]
+        },
+        "pageNo":1,
+        "numOfRows":1,
+        "totalCount":809}
+    }
+}
+
+
+//중기 육상 예보
+{ "response": 
+    {"header": {
+            "resultCode":"00",
+            "resultMsg":"NORMAL_SERVICE"
+        },
+        "body": {
+            "dataType":"JSON",
+            "items":{
+                "item":
+                    [{"regId":"11B00000",
+                    "rnSt3Am":0,
+                    "rnSt3Pm":0,
+                    "rnSt4Am":0,
+                    "rnSt4Pm":0,
+                    "rnSt5Am":0,
+                    "rnSt5Pm":0,
+                    "rnSt6Am":10,
+                    "rnSt6Pm":20,
+                    "rnSt7Am":30,
+                    "rnSt7Pm":30,
+                    "rnSt8":10,
+                    "rnSt9":10,
+                    "rnSt10":20,
+                    "wf3Am":"맑음",
+                    "wf3Pm":"맑음",
+                    "wf4Am":"맑음",
+                    "wf4Pm":"맑음",
+                    "wf5Am":"맑음",
+                    "wf5Pm":"맑음",
+                    "wf6Am":"맑음",
+                    "wf6Pm":"구름많음",
+                    "wf7Am":"구름많음",
+                    "wf7Pm":"구름많음",
+                    "wf8":"맑음",
+                    "wf9":"맑음",
+                    "wf10":"맑음"}]
+            },
+            "pageNo":1,
+            "numOfRows":1,
+            "totalCount":1
+        }
+    }
+}
+
+//중기 해상 예보
+{"response":
+    {"header":{
+        "resultCode":"00",
+        "resultMsg":"NORMAL_SERVICE"
+        },
+        "body":{
+            "dataType":"JSON",
+            "items":{
+                "item":[{
+                    "regId":"12A20000",
+                    "wf3Am":"흐리고 눈",
+                    "wf3Pm":"흐리고 눈",
+                    "wf4Am":"흐리고 비/눈",
+                    "wf4Pm":"흐림",
+                    "wf5Am":"구름많음",
+                    "wf5Pm":"구름많음",
+                    "wf6Am":"흐림",
+                    "wf6Pm":"흐림",
+                    "wf7Am":"구름많음",
+                    "wf7Pm":"구름많음",
+                    "wf8":"구름많음",
+                    "wf9":"구름많음",
+                    "wf10":"맑음",
+                    "wh3AAm":1.5,
+                    "wh3APm":1.5,
+                    "wh3BAm":3.5,
+                    "wh3BPm":3.5,
+                    "wh4AAm":1.0,
+                    "wh4APm":1.0,
+                    "wh4BAm":2.5,
+                    "wh4BPm":2.0,
+                    "wh5AAm":0.5,
+                    "wh5APm":0.5,
+                    "wh5BAm":1.5,
+                    "wh5BPm":1.5,
+                    "wh6AAm":1.0,
+                    "wh6APm":1.0,
+                    "wh6BAm":2.0,
+                    "wh6BPm":2.0,
+                    "wh7AAm":1.0,
+                    "wh7APm":1.0,
+                    "wh7BAm":2.0,
+                    "wh7BPm":2.0,
+                    "wh8A":1.0,
+                    "wh8B":2.0,
+                    "wh9A":1.0,
+                    "wh9B":2.0,
+                    "wh10A":0.5,
+                    "wh10B":1.5}]
+            },
+            "pageNo":1,
+            "numOfRows":1,
+            "totalCount":1
+        }
+    }
+}
+
