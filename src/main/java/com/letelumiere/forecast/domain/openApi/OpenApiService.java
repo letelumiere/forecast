@@ -3,179 +3,163 @@ package com.letelumiere.forecast.domain.openApi;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.MultiValueMapAdapter;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse;
+import com.letelumiere.forecast.domain.openApi.model.ApiMidSeaResponse;
+import com.letelumiere.forecast.domain.openApi.model.ApiShortResponse;
+import com.letelumiere.forecast.domain.openApi.model.MidApiRequest;
 import com.letelumiere.forecast.domain.openApi.model.ShortApiReqeust;
-import com.letelumiere.forecast.domain.openApi.model.ShortApiResponse;
 
-//단기예보
-    //요청주소 http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst
-    //서비스URL http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0
+
+@Service
+public class OpenApiService {
+
+    @Autowired
+    private RestTemplate restTemplate;
     
-    //초단기예보
-    //요청주소 http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst
-    //서비스URL http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0
+    @Autowired
+    private HttpHeaders httpHeaders;
     
-    //중기 육상
-    //요청주소 http://apis.data.go.kr/1360000/MidFcstInfoService/getMidFcst
-    //서비스URL http://apis.data.go.kr/1360000/MidFcstInfoService
+    @Value("${servicekey.encode}")
+    private String servicekeyEncode;
 
-    //중기해상
-    //요청주소 http://apis.data.go.kr/1360000/MidFcstInfoService/getMidSeaFcst
-    //서비스URL /MidFcstInfoService
+    @Value("${servicekey.decode}")
+    private String servicekeyDecode;
 
-    @Service
-    public class OpenApiService { //외부 API를 조회해서, DB에 저장하는 Service
-        //properties에 등록은 나중에
+    @Value("${url.base}"+"${url.short.path}")
+    private String shtPathURL;
 
-        @Autowired HttpHeaders httpHeaders;
-        @Autowired RestTemplate restTemplate;
+    @Value("${url.base}"+"${url.short.ultpath}")
+    private String ultPathURL;
+    
+    @Value("${url.base}"+"${url.mid.grd}")
+    private String midgrdURL;
 
-        String baseUrl = "https://apis.data.go.kr/1360000";
+    @Value("${url.base}"+"${url.mid.sea}")
+    private String midseaURL;
 
-        String villageServiceUrl = "/VilageFcstInfoService_2.0";
-        String MidFcstInfoService = "/MidFcstInfoService";
+    //초단기 LGT, 단기는 TMP
+    public ApiShortResponse getUltShortInfo(ShortApiReqeust request)  {
+        // UriComponentsBuilder를 사용하여 URI 생성
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(ultPathURL)
+            .queryParam("ServiceKey", servicekeyEncode)
+            .queryParam("pageNo", request.getPageNo())
+            .queryParam("numOfRows", request.getNumOfRows())
+            .queryParam("dataType", request.getDataType())
+            .queryParam("base_date", request.getBase_date())
+            .queryParam("base_time", request.getBase_time())
+            .queryParam("nx", request.getNx())
+            .queryParam("ny", request.getNy());
+        
+        String uri = builder.build().toUriString();
+        
+        HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
+        
+        ResponseEntity<ApiShortResponse> responseEntity = 
+            restTemplate.exchange(URI.create(uri), HttpMethod.GET, requestEntity,ApiShortResponse.class);
 
-        String getVilageFcst = "/getVilageFcst"; 
-        String getUltraSrtFcst = "/getUltraSrtFcst";
-
-        String getMidFcstUrl = "/getMidFcst";
-        String getMidSeaFcstUrl = "/getMidSeaFcst";
-
-        //@GetMapping("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst") <- 외부 API 
-        //해당 정보를 조회한다 
-        //외부 API를 조회한다
-
-        public ShortApiResponse getShortInfo(ShortApiReqeust request){
-
-            var uri = UriComponentsBuilder.fromHttpUrl(baseUrl+villageServiceUrl+getVilageFcst)
-                .queryParam("serviceKey", request.getServiceKey())
-                .queryParam("pageNo", request.getPageNo())
-                .queryParam("dataType", request.getDataType())
-                .queryParam("base_date", request.getBase_date())
-                .queryParam("base_time", request.getBase_time())
-                .queryParam("nx",request.getNx())
-                .queryParam("ny",request.getNy())
-                .build()
-                .toUriString();
-
-                ShortApiResponse result = restTemplate.getForObject(uri, ShortApiResponse.class);
-                if (result != null) {
-                    // 성공적으로 응답 받은 경우
-                    System.out.println(result.toString());
-                } else {
-                    // 응답이 없거나 오류가 발생한 경우
-                    System.out.println("No response or error occurred.");
-                }
             
-                return result;
-        }
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            System.out.println("초단기예보 parameter= " + uri);
+            System.out.println("초단기예보 body= " + responseEntity.getBody());
 
+            return responseEntity.getBody();
+        } else {
+            System.out.println("No response or error occurred. Status Code: " + responseEntity.getStatusCode());
+            throw new RestClientException("Error occurred during API call. Status Code: " + responseEntity.getStatusCode());
+        }
     }
 
-    /*
-     * public class ApiShortRequest {
-    private String ServiceKey; // 공공데이터포털에서 받은 인증키
-    private int pageNo; //페이지번호
-    private int numOfRows; //한 페이지 결과 수
-    private String dataType; // 요청자료형식(XML/JSON) Default: XML
-    private int base_date; //20210628 ‘21년 6월 28일 발표
-    private int base_time; // 0600 06시 발표(정시단위)
-    private int nx; //55 예보지점의 X 좌표값
-    private int ny;	// 127 예보지점의 Y 좌표값
+    public ApiShortResponse getShortInfo(ShortApiReqeust request)  {
+        // UriComponentsBuilder를 사용하여 URI 생성
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(shtPathURL)
+            .queryParam("ServiceKey", servicekeyEncode)
+            .queryParam("pageNo", request.getPageNo())
+            .queryParam("numOfRows", request.getNumOfRows())
+            .queryParam("dataType", request.getDataType())
+            .queryParam("base_date", request.getBase_date())
+            .queryParam("base_time", request.getBase_time())
+            .queryParam("nx", request.getNx())
+            .queryParam("ny", request.getNy());
+        
+        String uri = builder.build().toUriString();
+        
+        HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
+        
+        ResponseEntity<ApiShortResponse> responseEntity = 
+            restTemplate.exchange(URI.create(uri), HttpMethod.GET, requestEntity,ApiShortResponse.class);
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            System.out.println("단기예보 parameter= " + uri);
+            System.out.println("단기예보 body= " + responseEntity.getBody());
+            return responseEntity.getBody();
+        } else {
+            System.out.println("No response or error occurred. Status Code: " + responseEntity.getStatusCode());
+            throw new RestClientException("Error occurred during API call. Status Code: " + responseEntity.getStatusCode());
+        }
+    }
+
+    public ApiMidSeaResponse getMidSeaInfo(MidApiRequest request) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(midseaURL)
+            .queryParam("ServiceKey", servicekeyEncode)
+            .queryParam("pageNo", request.getPageNo())
+            .queryParam("numOfRows", request.getNumOfRows())
+            .queryParam("dataType", request.getDataType())
+            .queryParam("regId", request.getRegId())
+            .queryParam("tmFc", request.getTmFc());
+        
+        String uri = builder.build().toUriString();
+
+        HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
+        
+        ResponseEntity<ApiMidSeaResponse> responseEntity = 
+            restTemplate.exchange(URI.create(uri), HttpMethod.GET, requestEntity,ApiMidSeaResponse.class);
+
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            System.out.println("중기해상예보 parameter= " + uri);
+
+            return responseEntity.getBody();
+        } else {
+            System.out.println("No response or error occurred. Status Code: " + responseEntity.getStatusCode());
+            throw new RestClientException("Error occurred during API call. Status Code: " + responseEntity.getStatusCode());
+        }
+    }
+
+        public ApiMidGrdResponse getMidgrdInfo(MidApiRequest request) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(midgrdURL)
+            .queryParam("ServiceKey", servicekeyEncode)
+            .queryParam("pageNo", request.getPageNo())
+            .queryParam("numOfRows", request.getNumOfRows())
+            .queryParam("dataType", request.getDataType())
+            .queryParam("regId", request.getRegId())
+            .queryParam("tmFc", request.getTmFc());
+        
+        String uri = builder.build().toUriString();
+
+        HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
+        
+        ResponseEntity<ApiMidGrdResponse> responseEntity = 
+            restTemplate.exchange(URI.create(uri), HttpMethod.GET, requestEntity,ApiMidGrdResponse.class);
+
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            System.out.println("중기육상예보 parameter= " + uri);
+
+            return responseEntity.getBody();
+        } else {
+            System.out.println("No response or error occurred. Status Code: " + responseEntity.getStatusCode());
+            throw new RestClientException("Error occurred during API call. Status Code: " + responseEntity.getStatusCode());
+        }
+    }
 }
-     * 
-     * 
-     * 
-     */
 
-
-    /*
-
-    private String ServiceKey; // 공공데이터포털에서 받은 인증키
-    private int pageNo; //페이지번호
-    private int numOfRows; //한 페이지 결과 수
-    private String dataType; // 요청자료형식(XML/JSON) Default: XML
-    private int base_date; //20210628 ‘21년 6월 28일 발표
-    private int base_time; // 0600 06시 발표(정시단위)
-    private int nx; //55 예보지점의 X 좌표값
-    private int ny;	// 127 예보지점의 Y 좌표값
-
-    
-public class ApiExplorer {
-    public static void main(String[] args) throws IOException {
-//        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/MidFcstInfoService/getMidSeaFcst"); /*URL*/
-//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=서비스키"); /*Service Key*/
-//        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
-//        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*한 페이지 결과 수*/
-//        urlBuilder.append("&" + URLEncoder.encode("dataType","UTF-8") + "=" + URLEncoder.encode("XML", "UTF-8")); /*요청자료형식(XML/JSON)Default: XML*/
-//        urlBuilder.append("&" + URLEncoder.encode("regId","UTF-8") + "=" + URLEncoder.encode("12A20000", "UTF-8")); /*12A20000 서해중부, 12B10000 남해서부등.. 하단 참고자료 참조*/
-//        urlBuilder.append("&" + URLEncoder.encode("tmFc","UTF-8") + "=" + URLEncoder.encode("201404080600", "UTF-8")); /*-일 2회(06:00,18:00)회 생성 되며 발표시각을 입력- YYYYMMDD0600(1800) 최근 24시간 자료만 제공*/
-//        URL url = new URL(urlBuilder.toString());
-//        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//        conn.setRequestMethod("GET");
-//        conn.setRequestProperty("Content-type", "application/json");
-//        System.out.println("Response code: " + conn.getResponseCode());
-//        BufferedReader rd;
-//        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-//            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//        } else {
-//            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-//        }
-//        StringBuilder sb = new StringBuilder();
-//        String line;
-//        while ((line = rd.readLine()) != null) {
-//            sb.append(line);
-//        }
-//        rd.close();
-//        conn.disconnect();
-//        System.out.println(sb.toString());
-//    }
-//}
-//    public class TestServiceImpl {
-//        @Service("FifaonService")
-//        implements FifaonService {
-//        private static final String AUTHORIZATION = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X2lkIjoiMTMyNjIwNzg1OCIsImF1dGhfaWQiOiIyIiwidG9rZW5fdHlwZSI6IkFjY2Vzc1Rva2VuIiwic2VydmljZV9pZCI6IjQzMDAxMTQ4MSIsIlgtQXBwLVJhdGUtTGltaXQiOiI1MDA6MTAiLCJuYmYiOjE2MDg5NzU0MTgsImV4cCI6MTYyNDUyNzQxOCwiaWF0IjoxNjA4OTc1NDE4fQ.xBWhSNzSc_nkrXTJdTYSmsk8enfADOvoppRhfaCtYQw";
-//        private RestTemplate restTemplate;
-//        private JsonParser jParser;
-//        
-//        @Autowired
-//        public void FifaonService(RestTemplate restTemplate) {
-//            this.restTemplate = restTemplate;
-//        }
-//        
-//        @Override
-//        public Users SearchUserByNickname(String nickname) {
-//            String base_url = "https://api.nexon.co.kr/fifaonline4/v1.0/users?";
-//            
-//            URI uriBuilder = UriComponentsBuilder.fromHttpUrl(base_url)
-//                    .queryParam("nickname", nickname)
-//                    .build("usersInfo");
-//            
-//            HttpHeaders httpheaders = new HttpHeaders();
-//            httpheaders.add("Authorization", AUTHORIZATION);
-//            httpheaders.add("Content-Type","application/json; charset=UTF-8");
-//            
-////            RequestEntity<Void> requestEntity = RequestEntity.get(uriBuilder).headers(httpheaders).build();
-////            ResponseEntity<Users> response = restTemplate.exchange(uriBuilder, HttpMethod.GET, requestEntity, Users.class);
-////            
-////            Users users = response.getBody();
-//            
-//            return users;
-//        }
-//    
-//        *///
-//}

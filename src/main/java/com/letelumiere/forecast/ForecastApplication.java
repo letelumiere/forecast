@@ -1,13 +1,74 @@
 package com.letelumiere.forecast;
 
+import java.util.concurrent.CompletableFuture;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.ResponseEntity;
+
+import com.letelumiere.forecast.domain.openApi.OpenApiController;
+import com.letelumiere.forecast.domain.openApi.OpenApiService;
+import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse;
+import com.letelumiere.forecast.domain.openApi.model.ApiMidSeaResponse;
+import com.letelumiere.forecast.domain.openApi.model.ApiShortResponse;
+import com.letelumiere.forecast.domain.openApi.model.MidApiRequest;
+import com.letelumiere.forecast.domain.openApi.model.ShortApiReqeust;
 
 @SpringBootApplication
 public class ForecastApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ForecastApplication.class, args);
-	}
 
+    public static void main(String[] args) {
+        SpringApplication.run(ForecastApplication.class, args);
+    }
+
+    @Bean
+    CommandLineRunner commandLineRunner(OpenApiService service, OpenApiController controller) {
+        return args -> {
+            
+            var request1 = ShortApiReqeust.builder()
+                .pageNo("1")
+                .numOfRows("1")
+                .dataType("JSON")
+                .base_date("20231219")
+                .base_time("0500")
+                .nx("55")
+                .ny("127")
+                .build();
+
+            var request2 = MidApiRequest.builder()
+                .pageNo("1")
+                .numOfRows("1")
+                .dataType("JSON")
+                .regId("12A20000")
+                .tmFc("202312200600")
+                .build();
+
+            var request3 = MidApiRequest.builder()
+                .pageNo("1")
+                .numOfRows("1")
+                .dataType("JSON")
+                .regId("11D10000")
+                .tmFc("202312200600")
+                .build();
+
+            ResponseEntity<ApiShortResponse> responseEntity1 = controller.getShortAPI(request1);
+            System.out.println("단기 예보 = " + responseEntity1.getBody());
+
+            ResponseEntity<ApiMidSeaResponse> responseEntity2 = controller.getMidSeaAPI(request2);
+            System.out.println("중기 해상 예보 = " + responseEntity2.getBody());
+
+            ResponseEntity<ApiMidGrdResponse> responseEntity3 = controller.getMidGrdAPI(request3);
+            System.out.println("중기 해상 예보 = " + responseEntity3.getBody());
+
+        };
+    }
 }
+
+
+//YXJgpchWmzrsSPhfqtkyZeHrj0%2FqJ9BY%2FnCuKbQ1FLLXBXhGN%2ByieRVxBzMjwDkDzj5sRA9xrKFJQKxE%2FF0cjA%3D%3D
+
+//YXJgpchWmzrsSPhfqtkyZeHrj0%2FqJ9BY%2FnCuKbQ1FLLXBXhGN%2ByieRVxBzMjwDkDzj5sRA9xrKFJQKxE%2FF0cjA%3D%3D

@@ -1,50 +1,188 @@
 package com.letelumiere.forecast.domain.openApi.model;
+import com.fasterxml.jackson.annotation.*;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiMidSeaResponse {
-    private String resultCode;//2	필수	00	결과코드
-    private String resultMsg;//50	필수	OK	결과메시지
-    private String numOfRows;//4	필수	10	한 페이지 결과 수
-    private String pageNo;//4	필수	1	3
-    private String totalCount;//4	필수	3	전체 결과 수
-    private String dataType;//4	필수	XML	응답자료형식 (XML/JSON)
-    private String regId;//8	필수	12A10000	입력한 예보구역코드
-    private String wf3Am;//4	필수	구름많음	3일후 오전날씨예보
-    private String wf3Pm;//4	필수	구름많음	3일후 오후날씨예보
-    private String wf4Am;//4	필수	구름많음	4일후 오전날씨예보
-    private String wf4Pm;//4	필수	구름많음	4일후 오후날씨예보
-    private String wf5Am;//5	필수	구름많고비	5일후 오전날씨예보
-    private String wf5Pm;//5	필수	구름많고비	5일후 오후날씨예보
-    private String wf6Am;//5	필수	구름많고비	6일후 오전날씨예보
-    private String wf6Pm;//4	옵션	구름많음	6일후 오후날씨예보
-    private String wf7Am;//4	옵션	구름많음	7일후 오전날씨예보
-    private String wf7Pm;//4	옵션	구름많음	7일후 오후날씨예보
-    private String wf8;//4	옵션	구름많음	8일후 날씨예보
-    private String wf9;//4	옵션	구름많음	9일후 날씨예보
-    private String wf10;//4	옵션	구름많음	10일후 날씨예보
-    private int wh3AAm;//1	필수	1	3일후 오전 최저 예상파고(m)
-    private int wh3APm;//1	필수	3	3일후 오후 최저 예상파고(m)
-    private int wh3BAm;//1	필수	1	3일후 오전 최고 예상파고(m)
-    private int wh3BPm;//1	필수	3	3일후 오후 최고
-    private int wh4AAm;//1	필수	1	4일후 오전 최저
-    private int wh4APm;//1	필수	3	4일후 오후 최저
-    private int wh4BAm;//1	필수	1	4일후 오전 최고
-    private int wh4BPm;//1	필수	3	4일후 오후 최고
-    private int wh5AAm;//1	필수	1	5일후 오전 최저
-    private int wh5APm;//1	필수	3	5일후 오후 최저
-    private int wh5BAm;//1	필수	1	5일후 오전 최고
-    private int wh5BPm;//1	필수	3	5일후 오후 최고
-    private int wh6AAm;//1	필수	1	6일후 오전 최저
-    private int wh6APm;//1	필수	3	6일후 오후 최저
-    private int wh6BAm;//1	필수	1	6일후 오전 최고
-    private int wh6BPm;//1	필수	3	6일후 오후 최고
-    private int wh7AAm;//1	필수	1	7일후 오전 최저
-    private int wh7APm;//1	필수	3	7일후 오후 최저
-    private int wh7BAm;//1	필수	1	7일후 오전 최고
-    private int wh7BPm;//1	필수	3	7일후 오후 최고
-    private int wh8A;//1	필수	1	8일후 최저예상파고(m)
-    private int wh8B;//1	필수	3	8일후 최고 예상파고(m)
-    private int wh9A;//1	필수	1	9일후 최저예상파고(m)
-    private int wh9B;//1	필수	3	9일후 최고 예상파고(m)
-    private int wh10A;//1	필수	1	10일후 최저예상파고(m)
-    private int wh10B;//1	필수	3	10일후 최고 예상파고(m)
+
+    @JsonProperty("response")
+    private Response response;
+
+    @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Response {
+
+        @JsonProperty("header")
+        private Header header;
+
+        @JsonProperty("body")
+        private Body body;
+
+        @Data
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class Header {
+
+            @JsonProperty("resultCode")
+            private String resultCode;
+
+            @JsonProperty("resultMsg")
+            private String resultMsg;
+        }
+
+        @Data
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class Body {
+
+            @JsonProperty("dataType")
+            private String dataType;
+
+            @JsonProperty("items")
+            private Items items;
+
+            @JsonProperty("pageNo")
+            private int pageNo;
+
+            @JsonProperty("numOfRows")
+            private int numOfRows;
+
+            @JsonProperty("totalCount")
+            private int totalCount;
+
+            @Data
+            @JsonIgnoreProperties(ignoreUnknown = true)
+            public static class Items {
+
+                @JsonProperty("item")
+                private Item[] item;
+
+                @Data
+                @JsonIgnoreProperties(ignoreUnknown = true)
+                public static class Item {
+
+                    @JsonProperty("regId")
+                    private String regId;
+
+                    @JsonProperty("wf3Am")
+                    private String wf3Am;
+
+                    @JsonProperty("wf3Pm")
+                    private String wf3Pm;
+
+                    @JsonProperty("wf4Am")
+                    private String wf4Am;
+
+                    @JsonProperty("wf4Pm")
+                    private String wf4Pm;
+
+                    @JsonProperty("wf5Am")
+                    private String wf5Am;
+
+                    @JsonProperty("wf5Pm")
+                    private String wf5Pm;
+
+                    @JsonProperty("wf6Am")
+                    private String wf6Am;
+
+                    @JsonProperty("wf6Pm")
+                    private String wf6Pm;
+
+                    @JsonProperty("wf7Am")
+                    private String wf7Am;
+
+                    @JsonProperty("wf7Pm")
+                    private String wf7Pm;
+
+                    @JsonProperty("wf8")
+                    private String wf8;
+
+                    @JsonProperty("wf9")
+                    private String wf9;
+
+                    @JsonProperty("wf10")
+                    private String wf10;
+
+                    @JsonProperty("wh3AAm")
+                    private double wh3AAm;
+
+                    @JsonProperty("wh3APm")
+                    private double wh3APm;
+
+                    @JsonProperty("wh3BAm")
+                    private double wh3BAm;
+
+                    @JsonProperty("wh3BPm")
+                    private double wh3BPm;
+
+                    @JsonProperty("wh4AAm")
+                    private double wh4AAm;
+
+                    @JsonProperty("wh4APm")
+                    private double wh4APm;
+
+                    @JsonProperty("wh4BAm")
+                    private double wh4BAm;
+
+                    @JsonProperty("wh4BPm")
+                    private double wh4BPm;
+
+                    @JsonProperty("wh5AAm")
+                    private double wh5AAm;
+
+                    @JsonProperty("wh5APm")
+                    private double wh5APm;
+
+                    @JsonProperty("wh5BAm")
+                    private double wh5BAm;
+
+                    @JsonProperty("wh5BPm")
+                    private double wh5BPm;
+
+                    @JsonProperty("wh6AAm")
+                    private double wh6AAm;
+
+                    @JsonProperty("wh6APm")
+                    private double wh6APm;
+
+                    @JsonProperty("wh6BAm")
+                    private double wh6BAm;
+
+                    @JsonProperty("wh6BPm")
+                    private double wh6BPm;
+
+                    @JsonProperty("wh7AAm")
+                    private double wh7AAm;
+
+                    @JsonProperty("wh7APm")
+                    private double wh7APm;
+
+                    @JsonProperty("wh7BAm")
+                    private double wh7BAm;
+
+                    @JsonProperty("wh7BPm")
+                    private double wh7BPm;
+
+                    @JsonProperty("wh8A")
+                    private double wh8A;
+
+                    @JsonProperty("wh8B")
+                    private double wh8B;
+
+                    @JsonProperty("wh9A")
+                    private double wh9A;
+
+                    @JsonProperty("wh9B")
+                    private double wh9B;
+
+                    @JsonProperty("wh10A")
+                    private double wh10A;
+
+                    @JsonProperty("wh10B")
+                    private double wh10B;
+                }
+            }
+        }
+    }
 }

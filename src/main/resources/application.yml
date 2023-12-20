@@ -9,3 +9,15 @@ spring:
         show-sql : true
         hibernate :
             ddl-auto : create-drop
+
+serviceKey :
+    decode : YXJgpchWmzrsSPhfqtkyZeHrj0/qJ9BY/nCuKbQ1FLLXBXhGN+yieRVxBzMjwDkDzj5sRA9xrKFJQKxE/F0cjA==
+    encode : YXJgpchWmzrsSPhfqtkyZeHrj0%2FqJ9BY%2FnCuKbQ1FLLXBXhGN%2ByieRVxBzMjwDkDzj5sRA9xrKFJQKxE%2FF0cjA%3D%3D
+url :
+    base : https://apis.data.go.kr/1360000
+    short :
+        path : /VilageFcstInfoService_2.0/getVilageFcst
+        ultpath : /VilageFcstInfoService_2.0/getUltraSrtFcst
+    mid :
+        grd : /MidFcstInfoService/getMidLandFcst
+        sea : /MidFcstInfoService/getMidSeaFcst
