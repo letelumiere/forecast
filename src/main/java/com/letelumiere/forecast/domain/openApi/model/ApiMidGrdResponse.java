@@ -16,7 +16,6 @@ public class ApiMidGrdResponse {
     private Response response;
 
     @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Response {
 
         @JsonProperty("header")
@@ -26,7 +25,6 @@ public class ApiMidGrdResponse {
         private Body body;
 
         @Data
-        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Header {
 
             @JsonProperty("resultCode")
@@ -38,7 +36,6 @@ public class ApiMidGrdResponse {
             // Add getters and setters
         }
         @Data
-        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Body {
 
             @JsonProperty("dataType")
@@ -57,14 +54,12 @@ public class ApiMidGrdResponse {
             private int totalCount;
 
             @Data
-            @JsonIgnoreProperties(ignoreUnknown = true)
             public static class Items {
 
                 @JsonProperty("item")
                 private List<Item> item;
 
                 @Data
-                @JsonIgnoreProperties(ignoreUnknown = true)
                 public static class Item {
 
                     @JsonProperty("regId")

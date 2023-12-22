@@ -1,7 +1,7 @@
 package com.letelumiere.forecast.domain.openApi;
 
 import java.net.URI;
-
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -13,11 +13,15 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.letelumiere.forecast.domain.data.model.ForecastGrd;
+import com.letelumiere.forecast.domain.data.model.ForecastShort;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidSeaResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiShortResponse;
 import com.letelumiere.forecast.domain.openApi.model.MidApiRequest;
 import com.letelumiere.forecast.domain.openApi.model.ShortApiReqeust;
+import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse.Response.Body.Items.Item;
 
 
 @Service
@@ -70,7 +74,6 @@ public class OpenApiService {
             
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             System.out.println("초단기예보 parameter= " + uri);
-            System.out.println("초단기예보 body= " + responseEntity.getBody());
 
             return responseEntity.getBody();
         } else {
@@ -100,7 +103,8 @@ public class OpenApiService {
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             System.out.println("단기예보 parameter= " + uri);
-            System.out.println("단기예보 body= " + responseEntity.getBody());
+
+            body(responseEntity.getBody());
             return responseEntity.getBody();
         } else {
             System.out.println("No response or error occurred. Status Code: " + responseEntity.getStatusCode());
@@ -154,12 +158,37 @@ public class OpenApiService {
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             System.out.println("중기육상예보 parameter= " + uri);
-
+            body(responseEntity.getBody());
             return responseEntity.getBody();
         } else {
             System.out.println("No response or error occurred. Status Code: " + responseEntity.getStatusCode());
             throw new RestClientException("Error occurred during API call. Status Code: " + responseEntity.getStatusCode());
         }
+    }
+
+    public void body(ApiMidGrdResponse bodyResponse){   
+        var items = bodyResponse.getResponse().getBody().getItems().getItem();
+        for(Item grdItem : items){
+            System.out.println(grdItem.getClass());
+        }
+
+    }
+
+    public void body(ApiShortResponse bodyResponse){   
+        var bodyItem = bodyResponse.getResponse().getBody().getItems().getItem();
+        for(var shortItem : bodyItem){
+            //System.out.println("shortItem = " + shortItem.getBaseDate());
+            //System.out.println("shortItem = " + shortItem.getCategory());
+            var dto = ForecastShort.builder()
+                .baseDate(shortItem.getBaseDate())
+                .baseTime(shortItem.getBaseTime())
+                .nx(shortItem.getNx())
+                .ny(shortItem.getNy())
+                .category(shortItem.getCategory())
+                .build();
+            System.out.println("dto = " + dto.getBaseDate() + " " + dto.getBaseTime() + " " + dto.getNx() + "," + dto.getNy() + " " + dto.getCategory());
+        }
+
     }
 }
 
