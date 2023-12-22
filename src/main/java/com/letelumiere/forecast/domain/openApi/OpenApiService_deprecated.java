@@ -16,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.letelumiere.forecast.domain.data.model.ForecastGrd;
 import com.letelumiere.forecast.domain.data.model.ForecastShort;
+import com.letelumiere.forecast.domain.data.model.ForecastShortDTO;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidSeaResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiShortResponse;
@@ -178,11 +179,12 @@ public class OpenApiService_deprecated {
     }
 
     public void body(ApiShortResponse bodyResponse){   
+
         var bodyItem = bodyResponse.getResponse().getBody().getItems().getItem();
         for(var shortItem : bodyItem){
             //System.out.println("shortItem = " + shortItem.getBaseDate());
             //System.out.println("shortItem = " + shortItem.getCategory());
-            var dto = ForecastShort.builder()
+            var dto = ForecastShortDTO.builder()
                 .baseDate(shortItem.getBaseDate())
                 .baseTime(shortItem.getBaseTime())
                 .nx(shortItem.getNx())

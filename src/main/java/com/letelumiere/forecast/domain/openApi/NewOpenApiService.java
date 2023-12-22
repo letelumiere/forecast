@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.letelumiere.forecast.domain.data.DataService;
-import com.letelumiere.forecast.domain.data.model.ForecastShort;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidSeaResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiShortResponse;
@@ -89,6 +88,8 @@ public class NewOpenApiService {
             .toUriString();
     }
 
+    
+
     public String buildMidUri(String pathUri, MidApiRequest request){
         return UriComponentsBuilder.fromUriString(pathUri)
             .queryParam("ServiceKey", servicekeyEncode)
@@ -111,6 +112,7 @@ public class NewOpenApiService {
             if (responseType == ApiShortResponse.class) {
                 dataService.shortBody((ApiShortResponse) responseEntity.getBody());
             } else if (responseType == ApiUltShortResponse.class){
+                dataService.shortUltBody((ApiUltShortResponse) responseEntity.getBody());
 
             } else if (responseType == ApiMidGrdResponse.class){
 
@@ -123,5 +125,4 @@ public class NewOpenApiService {
             throw new RestClientException("API 호출 중 오류 발생. Status Code: " + responseEntity.getStatusCode());
         }
     }
-
 }

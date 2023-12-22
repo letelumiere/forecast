@@ -33,7 +33,6 @@ public class ApiMidGrdResponse {
             @JsonProperty("resultMsg")
             private String resultMsg;
 
-            // Add getters and setters
         }
         @Data
         public static class Body {
@@ -142,8 +141,6 @@ public class ApiMidGrdResponse {
 
                     @JsonProperty("wf10")
                     private String wf10;
-
-                    // Add getters and setters
                 }
             }
         }

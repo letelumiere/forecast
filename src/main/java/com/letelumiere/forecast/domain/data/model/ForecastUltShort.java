@@ -11,11 +11,12 @@ import lombok.NoArgsConstructor;
 
 
 @Builder
-@Entity(name = "forecast_short")
+@Entity(name = "forecast_short_ultra")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForecastShort {
+public class ForecastUltShort {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

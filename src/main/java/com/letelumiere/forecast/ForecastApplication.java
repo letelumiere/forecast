@@ -14,6 +14,7 @@ import com.letelumiere.forecast.domain.openApi.OpenApiService_deprecated;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidSeaResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiShortResponse;
+import com.letelumiere.forecast.domain.openApi.model.ApiUltShortResponse;
 import com.letelumiere.forecast.domain.openApi.model.MidApiRequest;
 import com.letelumiere.forecast.domain.openApi.model.ShortApiRequest;
 
@@ -57,13 +58,16 @@ public class ForecastApplication {
  
             ResponseEntity<ApiShortResponse> responseEntity1 = controller.getShortAPI(request1);
             System.out.println("단기 예보 = " + responseEntity1.getBody());
-/*
-            ResponseEntity<ApiMidSeaResponse> responseEntity2 = controller.getMidSeaAPI(request2);
-            System.out.println("중기 해상 예보 = " + responseEntity2.getBody());
 
-            ResponseEntity<ApiMidGrdResponse> responseEntity3 = controller.getMidGrdAPI(request3);
-            System.out.println("중기 육상 예보 = " + responseEntity3.getBody());
- */
+            ResponseEntity<ApiUltShortResponse> responseEntity4 = controller.getUltShortAPI(request1);
+            System.out.println("초단기 예보 = " + responseEntity4.getBody());
+
+//            ResponseEntity<ApiMidSeaResponse> responseEntity2 = controller.getMidSeaAPI(request2);
+//            System.out.println("중기 해상 예보 = " + responseEntity2.getBody());
+
+//            ResponseEntity<ApiMidGrdResponse> responseEntity3 = controller.getMidGrdAPI(request3);
+//            System.out.println("중기 육상 예보 = " + responseEntity3.getBody());
+
         };
     }
 }
