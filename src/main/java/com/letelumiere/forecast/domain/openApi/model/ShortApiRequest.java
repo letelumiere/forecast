@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor  //단기 초단기 공용
-public class ShortApiReqeust{
+public class ShortApiRequest{
     private String serviceKey; // 공공데이터포털에서 받은 인증키
     private String pageNo; //페이지번호
     private String numOfRows; //한 페이지 결과 수

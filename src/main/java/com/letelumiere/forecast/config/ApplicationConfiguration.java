@@ -35,6 +35,7 @@ public class ApplicationConfiguration {
         return new HttpHeaders();
     }
 
+
     @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();

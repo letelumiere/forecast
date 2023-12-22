@@ -20,12 +20,12 @@ import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidSeaResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiShortResponse;
 import com.letelumiere.forecast.domain.openApi.model.MidApiRequest;
-import com.letelumiere.forecast.domain.openApi.model.ShortApiReqeust;
+import com.letelumiere.forecast.domain.openApi.model.ShortApiRequest;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse.Response.Body.Items.Item;
 
 
 @Service
-public class OpenApiService {
+public class OpenApiService_deprecated {
 
     @Autowired
     private RestTemplate restTemplate;
@@ -51,8 +51,11 @@ public class OpenApiService {
     @Value("${url.base}"+"${url.mid.sea}")
     private String midseaURL;
 
+
+
+/* */
     //초단기 LGT, 단기는 TMP
-    public ApiShortResponse getUltShortInfo(ShortApiReqeust request)  {
+    public ApiShortResponse getUltShortInfo(ShortApiRequest request)  {
         // UriComponentsBuilder를 사용하여 URI 생성
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(ultPathURL)
             .queryParam("ServiceKey", servicekeyEncode)
@@ -82,7 +85,7 @@ public class OpenApiService {
         }
     }
 
-    public ApiShortResponse getShortInfo(ShortApiReqeust request)  {
+    public ApiShortResponse getShortInfo(ShortApiRequest request)  {
         // UriComponentsBuilder를 사용하여 URI 생성
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(shtPathURL)
             .queryParam("ServiceKey", servicekeyEncode)

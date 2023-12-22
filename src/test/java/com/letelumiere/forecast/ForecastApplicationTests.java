@@ -14,7 +14,6 @@ import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestTemplate;
 
 import com.letelumiere.forecast.domain.openApi.OpenApiController;
-import com.letelumiere.forecast.domain.openApi.model.ShortApiReqeust;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

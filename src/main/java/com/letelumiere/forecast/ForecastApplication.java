@@ -10,12 +10,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 
 import com.letelumiere.forecast.domain.openApi.OpenApiController;
-import com.letelumiere.forecast.domain.openApi.OpenApiService;
+import com.letelumiere.forecast.domain.openApi.OpenApiService_deprecated;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidSeaResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiShortResponse;
 import com.letelumiere.forecast.domain.openApi.model.MidApiRequest;
-import com.letelumiere.forecast.domain.openApi.model.ShortApiReqeust;
+import com.letelumiere.forecast.domain.openApi.model.ShortApiRequest;
 
 @SpringBootApplication
 public class ForecastApplication {
@@ -26,10 +26,10 @@ public class ForecastApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(OpenApiService service, OpenApiController controller) {
+    CommandLineRunner commandLineRunner(OpenApiService_deprecated service, OpenApiController controller) {
         return args -> {
             
-            var request1 = ShortApiReqeust.builder()
+            var request1 = ShortApiRequest.builder()
                 .pageNo("2")
                 .numOfRows("10")
                 .dataType("JSON")
