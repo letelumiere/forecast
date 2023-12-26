@@ -1,8 +1,19 @@
 package com.letelumiere.forecast.domain.openApi;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -17,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.letelumiere.forecast.domain.data.DataService;
+import com.letelumiere.forecast.domain.data.model.RegionCode;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidSeaResponse;
 import com.letelumiere.forecast.domain.openApi.model.ApiShortResponse;
@@ -88,8 +100,6 @@ public class NewOpenApiService {
             .toUriString();
     }
 
-    
-
     public String buildMidUri(String pathUri, MidApiRequest request){
         return UriComponentsBuilder.fromUriString(pathUri)
             .queryParam("ServiceKey", servicekeyEncode)
@@ -102,6 +112,7 @@ public class NewOpenApiService {
             .toUriString();
     }   
 
+
     private <T> T callApi(String uri, Class<T> responseType) {
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<T> responseEntity = restTemplate.exchange(URI.create(uri), HttpMethod.GET, requestEntity, responseType);
@@ -113,16 +124,18 @@ public class NewOpenApiService {
                 dataService.shortBody((ApiShortResponse) responseEntity.getBody());
             } else if (responseType == ApiUltShortResponse.class){
                 dataService.shortUltBody((ApiUltShortResponse) responseEntity.getBody());
-
             } else if (responseType == ApiMidGrdResponse.class){
 
             } else if (responseType == ApiMidSeaResponse.class) {
                 dataService.midSeaBody((ApiMidSeaResponse) responseEntity.getBody());
-            }
+            } 
+
             return responseEntity.getBody();
         } else {
             System.out.println("API 호출 실패. Status Code: " + responseEntity.getStatusCode());
             throw new RestClientException("API 호출 중 오류 발생. Status Code: " + responseEntity.getStatusCode());
         }
     }
+
+    
 }

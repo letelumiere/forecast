@@ -1,5 +1,7 @@
 package com.letelumiere.forecast.domain.data.model;
 
+import org.springframework.data.annotation.Id;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
@@ -15,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ForecastSea {
 
+    @Id
     @JsonProperty("regId")
     private String regId;
 

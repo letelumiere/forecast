@@ -1,6 +1,8 @@
 package com.letelumiere.forecast;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -9,6 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 
+import com.letelumiere.forecast.domain.data.DataController;
+import com.letelumiere.forecast.domain.data.model.RegionCode;
 import com.letelumiere.forecast.domain.openApi.OpenApiController;
 import com.letelumiere.forecast.domain.openApi.OpenApiService_deprecated;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse;
@@ -27,14 +31,17 @@ public class ForecastApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(OpenApiService_deprecated service, OpenApiController controller) {
+    CommandLineRunner commandLineRunner(OpenApiService_deprecated service, OpenApiController controller, DataController dataController) {
         return args -> {
+
+            String path = "src\\main\\region.xlsx";
+            dataController.postRegionCode(path);
             
             var request1 = ShortApiRequest.builder()
                 .pageNo("2")
                 .numOfRows("10")
                 .dataType("JSON")
-                .base_date("20231222") //tmcf의 YYYYMMDD는 오늘 날짜로 맞춰서 작성
+                .base_date("20231226") //tmcf의 YYYYMMDD는 오늘 날짜로 맞춰서 작성
                 .base_time("0500")
                 .nx("55")
                 .ny("127")
@@ -56,8 +63,8 @@ public class ForecastApplication {
                 .tmFc("202312220600") //tmcf의 YYYYMMDD는 오늘 날짜로 맞춰서 작성
                 .build();
  
-            ResponseEntity<ApiShortResponse> responseEntity1 = controller.getShortAPI(request1);
-            System.out.println("단기 예보 = " + responseEntity1.getBody());
+//            ResponseEntity<ApiShortResponse> responseEntity1 = controller.getShortAPI(request1);
+//            System.out.println("단기 예보 = " + responseEntity1.getBody());
 
             ResponseEntity<ApiUltShortResponse> responseEntity4 = controller.getUltShortAPI(request1);
             System.out.println("초단기 예보 = " + responseEntity4.getBody());
@@ -70,6 +77,7 @@ public class ForecastApplication {
 
         };
     }
+
 }
 
 

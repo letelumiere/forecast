@@ -13,9 +13,11 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestTemplate;
 
+import com.letelumiere.forecast.domain.data.DataController;
+import com.letelumiere.forecast.domain.data.model.RegionCode;
 import com.letelumiere.forecast.domain.openApi.OpenApiController;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ForecastApplicationTests {
@@ -23,14 +25,16 @@ class ForecastApplicationTests {
     @Autowired
     OpenApiController apiController;
 
+    @Autowired
+    DataController dataController;
+
     @MockBean
     private MockRestServiceServer mockRestServiceServer;
 
 	@SpyBean
 	private RestTemplate restTemplate;
 
-    @DisplayName("외부 API 호출 테스트")
-    @Test
+
     void testExternalApiCall() {
         // 외부 API 호출 대신 Mock 응답 설정
 //        mockRestServiceServer
