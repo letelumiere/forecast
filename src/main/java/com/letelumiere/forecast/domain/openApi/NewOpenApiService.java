@@ -120,15 +120,19 @@ public class NewOpenApiService {
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             System.out.println("API 호출 성공. URI: " + uri);
 
-            if (responseType == ApiShortResponse.class) {
-                dataService.shortBody((ApiShortResponse) responseEntity.getBody());
-            } else if (responseType == ApiUltShortResponse.class){
-                dataService.shortUltBody((ApiUltShortResponse) responseEntity.getBody());
-            } else if (responseType == ApiMidGrdResponse.class){
-
-            } else if (responseType == ApiMidSeaResponse.class) {
-                dataService.midSeaBody((ApiMidSeaResponse) responseEntity.getBody());
-            } 
+            if(responseEntity.getBody() != null){
+                if (responseType == ApiShortResponse.class) {
+                    dataService.shortBody((ApiShortResponse) responseEntity.getBody());
+                } else if (responseType == ApiUltShortResponse.class){
+                    dataService.shortUltBody((ApiUltShortResponse) responseEntity.getBody());
+                } else if (responseType == ApiMidGrdResponse.class){
+                    dataService.midGrdBody(((ApiMidGrdResponse) responseEntity.getBody()));
+                } else if (responseType == ApiMidSeaResponse.class) {
+                    dataService.midSeaBody((ApiMidSeaResponse) responseEntity.getBody());
+                } 
+            }else{
+                throw new NullPointerException("responseBody() is null.");
+            }
 
             return responseEntity.getBody();
         } else {

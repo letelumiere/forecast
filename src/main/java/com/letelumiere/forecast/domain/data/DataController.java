@@ -28,18 +28,30 @@ import com.letelumiere.forecast.domain.data.model.RegionCode;
 import com.letelumiere.forecast.domain.openApi.model.ApiShortResponse;
 import com.letelumiere.forecast.domain.openApi.model.ShortApiRequest;
 
+import lombok.RequiredArgsConstructor;
 
-@Controller
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+
+@Controller("/data")
+@RequiredArgsConstructor
 public class DataController {
 
     @Autowired
-    DataService dataService;
+    private final DataService dataService;
 
 
     @PostMapping("/registerRegion") 
     public void postRegionCode(@RequestBody String request) throws IOException{ //src\\main\\region.xlsx
         dataService.xslxToList(request);
     }
+
+    @GetMapping("/scanRegionCode")
+    public ResponseEntity<List<RegionCode>> getRegionCodeList() {
+        return ResponseEntity.ok(dataService.findAllCodes());
+    }
+
 
 }
 

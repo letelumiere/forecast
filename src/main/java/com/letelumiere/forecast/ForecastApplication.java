@@ -1,9 +1,12 @@
 package com.letelumiere.forecast;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
+import org.hibernate.type.descriptor.java.LocalDateTimeJavaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -33,47 +36,50 @@ public class ForecastApplication {
     @Bean
     CommandLineRunner commandLineRunner(OpenApiService_deprecated service, OpenApiController controller, DataController dataController) {
         return args -> {
-
             String path = "src\\main\\region.xlsx";
+            LocalDate currentDate = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            String formattedDate = currentDate.format(formatter);
+
             dataController.postRegionCode(path);
-            
-            var request1 = ShortApiRequest.builder()
-                .pageNo("2")
-                .numOfRows("10")
-                .dataType("JSON")
-                .base_date("20231226") //tmcf의 YYYYMMDD는 오늘 날짜로 맞춰서 작성
-                .base_time("0500")
-                .nx("55")
-                .ny("127")
-                .build();
-
-            var request2 = MidApiRequest.builder()
-                .pageNo("1")
-                .numOfRows("1")
-                .dataType("JSON")
-                .regId("12A20000")
-                .tmFc("202312220600")    //tmcf의 YYYYMMDD는 오늘 날짜로 맞춰서 작성
-                .build();
-
-            var request3 = MidApiRequest.builder()
-                .pageNo("1")
-                .numOfRows("10")
-                .dataType("JSON")
-                .regId("11D10000")
-                .tmFc("202312220600") //tmcf의 YYYYMMDD는 오늘 날짜로 맞춰서 작성
-                .build();
+            var codeList = dataController.getRegionCodeList();
  
-//            ResponseEntity<ApiShortResponse> responseEntity1 = controller.getShortAPI(request1);
-//            System.out.println("단기 예보 = " + responseEntity1.getBody());
+            var request1 = ShortApiRequest.builder()
+                    .pageNo("2")
+                    .numOfRows("3")
+                    .dataType("JSON")
+                    .base_date(formattedDate) //tmcf의 YYYYMMDD는 오늘 날짜로 맞춰서 작성
+                    .base_time("0500")
+                    .nx("55")
+                    .ny("127")
+                    .build();
 
-            ResponseEntity<ApiUltShortResponse> responseEntity4 = controller.getUltShortAPI(request1);
-            System.out.println("초단기 예보 = " + responseEntity4.getBody());
+            for(int x=54;x<=56;x++){
+                for(int y=127;y<=130;y++){
+                    ResponseEntity<ApiShortResponse> response1 = controller.getShortAPI(request1);
+                    ResponseEntity<ApiUltShortResponse> response2 = controller.getUltShortAPI(request1);
+                }
+            }
 
-//            ResponseEntity<ApiMidSeaResponse> responseEntity2 = controller.getMidSeaAPI(request2);
-//            System.out.println("중기 해상 예보 = " + responseEntity2.getBody());
 
-//            ResponseEntity<ApiMidGrdResponse> responseEntity3 = controller.getMidGrdAPI(request3);
-//            System.out.println("중기 육상 예보 = " + responseEntity3.getBody());
+            codeList.getBody().forEach(code -> {
+                if(code.getId()>5) return;
+
+                var request2 = MidApiRequest.builder()
+                    .pageNo("1")
+                    .numOfRows("10")
+                    .dataType("JSON")
+                    .regId(code.getCode())
+                    .tmFc(formattedDate+"0600")    //tmcf의 YYYYMMDD는 오늘 날짜로 맞춰서 작성
+                    .build();
+
+                String str = code.getCode().substring(0, 2);
+                if(str.equals("12")) {
+                    ResponseEntity<ApiMidSeaResponse> response1 = controller.getMidSeaAPI(request2);
+                }else if(str.equals("11")){ //wh...에 뭔가 없으면 진짜로 없어서임 
+                    ResponseEntity<ApiMidGrdResponse> response1 = controller.getMidGrdAPI(request2);    
+                }
+            });
 
         };
     }

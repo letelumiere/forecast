@@ -2,14 +2,24 @@ package com.letelumiere.forecast.domain.data.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
-@Entity
+@Data
+@Entity(name = "forecast_ground")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ForecastGrd{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String regId;
     private int rnSt3Am;
     private int rnSt3Pm;
