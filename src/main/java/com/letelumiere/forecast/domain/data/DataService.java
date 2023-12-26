@@ -57,6 +57,7 @@ public class DataService {
 
                 regionRepository.save(data);
             });
+            System.out.println("registering List success!");
         }else{
             System.out.println("registering List failed!");
         }
