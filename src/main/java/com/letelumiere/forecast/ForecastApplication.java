@@ -2,12 +2,7 @@ package com.letelumiere.forecast;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.logging.Logger;
 
-import org.hibernate.type.descriptor.java.LocalDateTimeJavaType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 
 import com.letelumiere.forecast.domain.data.DataController;
-import com.letelumiere.forecast.domain.data.model.RegionCode;
 import com.letelumiere.forecast.domain.openApi.OpenApiController;
 import com.letelumiere.forecast.domain.openApi.OpenApiService_deprecated;
 import com.letelumiere.forecast.domain.openApi.model.ApiMidGrdResponse;
@@ -60,7 +54,6 @@ public class ForecastApplication {
                     ResponseEntity<ApiUltShortResponse> response2 = controller.getUltShortAPI(request1);
                 }
             }
-
 
             codeList.getBody().forEach(code -> {
                 if(code.getId()>5) return;

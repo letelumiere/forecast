@@ -1,75 +1,67 @@
 package com.letelumiere.forecast;
-import org.junit.jupiter.api.DisplayName;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.client.match.MockRestRequestMatchers;
-import org.springframework.test.web.client.response.MockRestResponseCreators;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.test.web.servlet.MockMvc;
 
-import com.letelumiere.forecast.domain.data.DataController;
+import com.letelumiere.forecast.domain.data.model.MarineTimeForecast;
+import com.letelumiere.forecast.domain.data.model.RainGauge;
 import com.letelumiere.forecast.domain.data.model.RegionCode;
-import com.letelumiere.forecast.domain.openApi.OpenApiController;
+import com.letelumiere.forecast.domain.data.model.WeatherForecast;
+
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
 
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@Transactional
+@AutoConfigureMockMvc
 class ForecastApplicationTests {
 
     @Autowired
-    OpenApiController apiController;
+    private MockMvc mockMvc;
 
     @Autowired
-    DataController dataController;
-
-    @MockBean
-    private MockRestServiceServer mockRestServiceServer;
-
-	@SpyBean
-	private RestTemplate restTemplate;
+    private EntityManager entityManager;
 
 
-    void testExternalApiCall() {
-        // 외부 API 호출 대신 Mock 응답 설정
-//        mockRestServiceServer
-//                .expect(MockRestRequestMatchers.requestTo("http"))
-//                .andRespond(MockRestResponseCreators.withStatus(HttpStatus.OK)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .body("{ \"message\": \"Hello\" }"));
-
-/*         // 외부 API 호출
-        ResponseEntity<ShortApiResponse> responseEntity = apiController.getShortAPI(getTestApiRequest());
-
-        // 응답이 null이 아닌지 확인
-        assertNotNull(responseEntity);
-
-        // ResponseEntity의 body를 확인
-        ShortApiResponse shortApiResponse = responseEntity.getBody();
-        assertNotNull(shortApiResponse);
-
-        // 응답 결과 출력
-        System.out.println("External API Response: " + shortApiResponse);
-        
-    }
-
-    private ShortApiReqeust getTestApiRequest() {
-        return ShortApiReqeust.builder()
-                .serviceKey("LtU1iAgzFsSLt%2B%2BlIFdaFpZuMv%2BXPFR3tHw9XbFDBTOdm%2BztvmN1%2BIgqxmk6F5V%2FJggpSEWj43t3iEUW99RzYQ%3D%3D")
-                .pageNo("1")
-                .numOfRows("1")
-                .dataType("JSON")
-                .base_date("20231219")
-                .base_time("0500")
-                .nx("55")
-                .ny("127")
+    @Test
+    void test1() {
+        try {
+            // MarineTimeForecast를 먼저 저장
+            var marine = MarineTimeForecast.builder()
+                .regId("12A13TEST223")
                 .build();
-    }
-    */
-    }
+            entityManager.persist(marine);
+    
+            var rf = RainGauge.builder()
+                .regId("12A13TEST223")
+                .build();
+            entityManager.persist(rf);
+
+            var wf = WeatherForecast.builder()
+                .regId("12A13TEST223")
+                .build();
+            entityManager.persist(wf);
+
+            // RegionCode를 생성하면서 앞서 저장한 MarineTimeForecast를 사용
+            var regionCode = RegionCode.builder()
+                .code("12A13TEST223")
+                .marineTimeForecast(marine)
+                .weatherForecast(wf)
+                .rainGauge(rf)
+                .build();
+
+            entityManager.persist(regionCode);
+            // 변경을 데이터베이스에 반영
+            entityManager.flush();
+        } catch (Exception e) {
+            // 예외 처리
+            e.printStackTrace();
+            fail("테스트 실패: " + e.getMessage());
+        }
+    }   
 }

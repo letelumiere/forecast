@@ -1,23 +1,29 @@
 spring:
-    datasource :     
-        driver-class-name : com.mysql.cj.jdbc.Driver
-        url : jdbc:mysql://localhost:3306/public_forecast
-        username : root
-        password : 1234
-    jpa : 
-        database-platform: org.hibernate.dialect.MySQL8Dialect
-        show-sql : true
-        hibernate :
-            ddl-auto : update
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/public_forecast
+    username: root
+    password: 1234
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
 
-serviceKey :
-    decode : YXJgpchWmzrsSPhfqtkyZeHrj0/qJ9BY/nCuKbQ1FLLXBXhGN+yieRVxBzMjwDkDzj5sRA9xrKFJQKxE/F0cjA==
-    encode : YXJgpchWmzrsSPhfqtkyZeHrj0%2FqJ9BY%2FnCuKbQ1FLLXBXhGN%2ByieRVxBzMjwDkDzj5sRA9xrKFJQKxE%2FF0cjA%3D%3D
-url :
-    base : https://apis.data.go.kr/1360000
-    short :
-        path : /VilageFcstInfoService_2.0/getVilageFcst
-        ultpath : /VilageFcstInfoService_2.0/getUltraSrtFcst
-    mid :
-        grd : /MidFcstInfoService/getMidLandFcst
-        sea : /MidFcstInfoService/getMidSeaFcst
+serviceKey:
+  decode: YXJgpchWmzrsSPhfqtkyZeHrj0/qJ9BY/nCuKbQ1FLLXBXhGN+yieRVxBzMjwDkDzj5sRA9xrKFJQKxE/F0cjA==
+  encode: YXJgpchWmzrsSPhfqtkyZeHrj0%2FqJ9BY%2FnCuKbQ1FLLXBXhGN%2ByieRVxBzMjwDkDzj5sRA9xrKFJQKxE%2FF0cjA%3D%3D
+
+url:
+  base: https://apis.data.go.kr/1360000
+  short:
+    path: /VilageFcstInfoService_2.0/getVilageFcst
+    ultpath: /VilageFcstInfoService_2.0/getUltraSrtFcst
+  mid:
+    grd: /MidFcstInfoService/getMidLandFcst
+    sea: /MidFcstInfoService/getMidSeaFcst
